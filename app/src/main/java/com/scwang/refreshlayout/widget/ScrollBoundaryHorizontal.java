@@ -1,36 +1,21 @@
-package com.scwang.smartrefresh.layout.util;
+package com.scwang.refreshlayout.widget;
 
-import android.content.Context;
 import android.graphics.PointF;
-import android.os.Build;
-import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
-import android.support.v4.view.NestedScrollingChild;
-import android.support.v4.view.NestedScrollingParent;
-import android.support.v4.view.ScrollingView;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.AbsListView;
-import android.widget.ListView;
-import android.widget.ScrollView;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import com.scwang.smartrefresh.layout.util.SmartUtil;
 
 /**
  * 滚动边界
- * Created by SCWANG on 2017/7/8.
+ * Created by scwang on 2017/7/8.
  */
-
 @SuppressWarnings("WeakerAccess")
-public class ScrollBoundaryUtil {
+public class ScrollBoundaryHorizontal {
 
     //<editor-fold desc="滚动判断">
-
     /**
      * 判断内容是否可以刷新
      * @param targetView 内容视图
@@ -38,7 +23,7 @@ public class ScrollBoundaryUtil {
      * @return 是否可以刷新
      */
     public static boolean canRefresh(@NonNull View targetView, PointF touch) {
-        if (canScrollUp(targetView) && targetView.getVisibility() == View.VISIBLE) {
+        if (canScrollLeft(targetView) && targetView.getVisibility() == View.VISIBLE) {
             return false;
         }
         //touch == null 时 canRefresh 不会动态递归搜索
@@ -49,6 +34,9 @@ public class ScrollBoundaryUtil {
             for (int i = childCount; i > 0; i--) {
                 View child = viewGroup.getChildAt(i - 1);
                 if (isTransformedTouchPointInView(viewGroup, child, touch.x, touch.y, point)) {
+                    if ("fixed".equals(child.getTag())) {
+                        return false;
+                    }
                     touch.offset(point.x, point.y);
                     boolean can = canRefresh(child, touch);
                     touch.offset(-point.x, -point.y);
@@ -67,17 +55,20 @@ public class ScrollBoundaryUtil {
      * @return 是否可以刷新
      */
     public static boolean canLoadMore(@NonNull View targetView, PointF touch, boolean contentFull) {
-        if (canScrollDown(targetView) && targetView.getVisibility() == View.VISIBLE) {
+        if (canScrollRight(targetView) && targetView.getVisibility() == View.VISIBLE) {
             return false;
         }
         //touch == null 时 canLoadMore 不会动态递归搜索
-        if (targetView instanceof ViewGroup && touch != null) {
+        if (targetView instanceof ViewGroup && touch != null && !SmartUtil.isScrollableView(targetView)) {
             ViewGroup viewGroup = (ViewGroup) targetView;
             final int childCount = viewGroup.getChildCount();
             PointF point = new PointF();
             for (int i = 0; i < childCount; i++) {
                 View child = viewGroup.getChildAt(i);
                 if (isTransformedTouchPointInView(viewGroup, child, touch.x, touch.y, point)) {
+                    if ("fixed".equals(child.getTag())) {
+                        return false;
+                    }
                     touch.offset(point.x, point.y);
                     boolean can = canLoadMore(child, touch, contentFull);
                     touch.offset(-point.x, -point.y);
@@ -85,14 +76,14 @@ public class ScrollBoundaryUtil {
                 }
             }
         }
-        return (contentFull || canScrollUp(targetView));
+        return (contentFull || canScrollLeft(targetView));
     }
 
-//    public static boolean canScrollDown(View targetView, MotionEvent event) {
-//        if (canScrollDown(targetView) && targetView.getVisibility() == View.VISIBLE) {
+//    public static boolean canScrollRight(View targetView, MotionEvent event) {
+//        if (canScrollRight(targetView) && targetView.getVisibility() == View.VISIBLE) {
 //            return true;
 //        }
-//        //event == null 时 canScrollDown 不会动态递归搜索
+//        //event == null 时 canScrollRight 不会动态递归搜索
 //        if (targetView instanceof ViewGroup && event != null) {
 //            ViewGroup viewGroup = (ViewGroup) targetView;
 //            final int childCount = viewGroup.getChildCount();
@@ -102,14 +93,14 @@ public class ScrollBoundaryUtil {
 //                if (isTransformedTouchPointInView(viewGroup, child, event.getX(), event.getY(), point)) {
 //                    event = MotionEvent.obtain(event);
 //                    event.offsetLocation(point.x, point.y);
-//                    return canScrollDown(child, event);
+//                    return canScrollRight(child, event);
 //                }
 //            }
 //        }
 //        return false;
 //    }
 
-    public static boolean canScrollUp(@NonNull View targetView) {
+    public static boolean canScrollLeft(@NonNull View targetView) {
         if (android.os.Build.VERSION.SDK_INT < 14) {
             if (targetView instanceof AbsListView) {
                 final ViewGroup viewGroup = (ViewGroup) targetView;
@@ -121,11 +112,11 @@ public class ScrollBoundaryUtil {
                 return targetView.getScrollY() > 0;
             }
         } else {
-            return targetView.canScrollVertically(-1);
+            return targetView.canScrollHorizontally(-1);
         }
     }
 
-    public static boolean canScrollDown(@NonNull View targetView) {
+    public static boolean canScrollRight(@NonNull View targetView) {
         if (android.os.Build.VERSION.SDK_INT < 14) {
             if (targetView instanceof AbsListView) {
                 final ViewGroup viewGroup = (ViewGroup) targetView;
@@ -137,14 +128,12 @@ public class ScrollBoundaryUtil {
                 return targetView.getScrollY() < 0;
             }
         } else {
-            return targetView.canScrollVertically(1);
+            return targetView.canScrollHorizontally(1);
         }
     }
-
     //</editor-fold>
 
     //<editor-fold desc="transform Point">
-
     public static boolean isTransformedTouchPointInView(@NonNull View group,@NonNull View child, float x, float y,PointF outLocalPoint) {
         if (child.getVisibility() != View.VISIBLE) {
             return false;

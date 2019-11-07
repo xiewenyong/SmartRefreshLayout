@@ -2,14 +2,12 @@
 
 [![License](https://img.shields.io/badge/License%20-Apache%202-337ab7.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Arsenal](https://img.shields.io/badge/Arsenal%20-%20SmartRefresh-4cae4c.svg)](https://android-arsenal.com/details/1/6001)
-[![Jcenter](https://img.shields.io/badge/%20Jcenter%20-1.1.0-5bc0de.svg)](https://bintray.com/scwang90/maven/SmartRefreshLayout/_latestVersion)
+[![JCenter](https://img.shields.io/badge/%20Jcenter%20-1.1.0-5bc0de.svg)](https://bintray.com/scwang90/maven/SmartRefreshLayout/_latestVersion)
 [![MinSdk](https://img.shields.io/badge/%20MinSdk%20-%2012%2B%20-f0ad4e.svg)](https://android-arsenal.com/api?level=12)
-[![Methods](https://img.shields.io/badge/Methods%20%7C%20Size%20-%20901%20%7C%20122%20KB-d9534f.svg)](http://www.methodscount.com/?lib=com.scwang.smartrefresh%3ASmartRefreshLayout%3A1.1.0)
+[![Methods](https://img.shields.io/badge/Methods%20%7C%20Size%20-%20784%20%7C%20122%20KB-d9534f.svg)](http://www.methodscount.com/?lib=com.scwang.smartrefresh%3ASmartRefreshLayout%3A1.1.0)
 
 ## English | [中文](README.md)
 
-As the name says, SmartRefreshLayout is a "smart" or "intelligent" pull-down refresh layout，because of its "smart", it does not just support all the Views , but also support multi-layered nested view structures.  
-It extends from ViewGroup rather than FrameLayout or LinearLayout, this not only improves its performance, but also enables it to absorb the advantages of various refresh layouts in fashion now，Including Google official [SwipeRefreshLayout](https://developer.android.com/reference/android/support/v4/widget/SwipeRefreshLayout.html)、[TwinklingRefreshLayout](https://github.com/lcodecorex/TwinklingRefreshLayout) 、[Ultra-Pull-To-Refresh](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh). Also it integrates various cool Headers and Footers.  
 SmartRefreshLayout's goal is to build a strong, stable and mature pull-down refresh layout framework, and to integrate all kinds of cool, diverse, practical and beautiful Headers and Footers.
 
 ## Features
@@ -25,6 +23,9 @@ SmartRefreshLayout's goal is to build a strong, stable and mature pull-down refr
  - Support setting a variety of transformations (Translation, stretching, behind fixed, top fixed, full screen view) for Headers and Footers.
  - Support rewrite and extension, internal implementation without private methods and fields.
  - Support automatically cross-border rebound for all rolling Views (Listview、RecyclerView、ScrollView、WebView...View).
+ - Support the interchange of Header and Footer
+ - Support AndroidX
+ - Support [HorizontalRefresh](https://github.com/scwang90/SmartRefreshHorizontal)
  
 ## Gateway
 
@@ -97,12 +98,20 @@ Please rest assured that I have divided it into three packages, when used to ref
 
 ## Usage
 #### 1.Add a gradle dependency.
+
+[【V2.0.0】](https://github.com/scwang90/SmartRefreshLayout/blob/master/README_EN.md#1add-a-gradle-dependency)
+main change is to subcontract SmartRefreshLayout to reduce unnecessary dependencies and avoid code redundancy.
+welcome to experience.
+
 ```
-compile 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-4'
-compile 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-4'//If you use the special Header
+implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0'
+implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0'  //If you use the special Header
+```
+If you use AndroidX, add it to gradle.properties
 
-compile 'com.android.support:appcompat-v7:25.3.1'
-
+```
+android.useAndroidX=true
+android.enableJetifier=true
 ```
 
 #### 2.Add SmartRefreshLayout in the layout xml.
@@ -183,7 +192,7 @@ Note: this method is the lowest priority.
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/padding_common"
+        android:padding="@dimen/dimenPaddingCommon"
         android:background="@android:color/white"
         android:text="@string/description_define_in_xml"/>
     <com.scwang.smartrefresh.layout.footer.ClassicsFooter
@@ -220,6 +229,11 @@ If in the donation message note name, it will be record to the list
 [Donation list](art/md_donationlist.md)
 
 #### blogroll
+[github/Bamboy120315/Freedom](https://github.com/Bamboy120315/Freedom)  
+[github/TommyLemon/APIJSON](https://github.com/TommyLemon/APIJSON)  
+[github/dengyuhan](https://github.com/dengyuhan)  
+[github/zrp2017](https://github.com/zrp2017)  
+[github/fly803/BaseProject](https://github.com/fly803/BaseProject)  
 [github/razerdp](https://github.com/razerdp)  
 [github/SuperChenC/s-mvp](https://github.com/SuperChenC/s-mvp)  
 [github/KingJA/LoadSir](https://github.com/KingJA/LoadSir)  
@@ -228,7 +242,7 @@ If in the donation message note name, it will be record to the list
 [github/addappcn](https://github.com/addappcn)  
 [github/RainliFu](https://github.com/RainliFu)  
 [github/sugarya](https://github.com/sugarya)  
-[github/stormzhang](https://github.com/stormzhang)
+[github/stormzhang](https://github.com/stormzhang)  
 
 ## Discuss
 

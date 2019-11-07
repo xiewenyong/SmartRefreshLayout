@@ -26,14 +26,13 @@ import com.scwang.smartrefresh.header.R;
 import com.scwang.smartrefresh.layout.api.RefreshKernel;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.constant.RefreshState;
-import com.scwang.smartrefresh.layout.util.DensityUtil;
+import com.scwang.smartrefresh.layout.util.SmartUtil;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 
 /**
- * Created by Hitomis on 2016/3/9.
- * email:196425254@qq.com
+ * Created by scwang on 2016/3/9.
  * https://github.com/Hitomis/FunGameRefresh
  */
 @SuppressWarnings("unused")
@@ -54,7 +53,6 @@ public abstract class FunGameView<T extends FunGameView> extends FunGameBase {
     public String mMaskTextTopRelease;
 
     protected int mHalfHeaderHeight;
-
     //</editor-fold>
 
     //<editor-fold desc="Field - Arena">
@@ -95,8 +93,6 @@ public abstract class FunGameView<T extends FunGameView> extends FunGameBase {
         final TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.FunGameView);
 
         //<editor-fold desc="init - Curtain">
-
-
         mMaskTextBottom = thisView.getResources().getString(R.string.fgh_mask_bottom);//"拖动控制游戏";//"Scroll to move handle";
         mMaskTextTopPull = thisView.getResources().getString(R.string.fgh_mask_top_pull);//"下拉即将展开";//"Pull To Break Out!";
         mMaskTextTopRelease = thisView.getResources().getString(R.string.fgh_mask_top_release);//"放手即将展开";//"Release To Break Out!";
@@ -124,11 +120,11 @@ public abstract class FunGameView<T extends FunGameView> extends FunGameBase {
         mShadowView = new RelativeLayout(context);
         mShadowView.setBackgroundColor(0xFF3A3A3A);
 
-        mMaskViewTop = createMaskView(context,mMaskTextTopPull, maskTextSizeTop, Gravity.BOTTOM);
-        mMaskViewBottom = createMaskView(context,mMaskTextBottom, maskTextSizeBottom, Gravity.TOP);
+        mMaskViewTop = createMaskView(context, mMaskTextTopPull, maskTextSizeTop, Gravity.BOTTOM);
+        mMaskViewBottom = createMaskView(context, mMaskTextBottom, maskTextSizeBottom, Gravity.TOP);
 
         if (!thisView.isInEditMode()) {
-            int height = DensityUtil.dp2px(100);
+            int height = SmartUtil.dp2px(100);
             LayoutParams maskLp = new LayoutParams(MATCH_PARENT, height);
 //            maskLp.topMargin = (int) FunGameView.DIVIDING_LINE_SIZE;
 //            maskLp.bottomMargin = (int) FunGameView.DIVIDING_LINE_SIZE;
@@ -142,11 +138,10 @@ public abstract class FunGameView<T extends FunGameView> extends FunGameBase {
             curtainLayout.addView(mMaskViewTop, lpTop);
             curtainLayout.addView(mMaskViewBottom, lpBottom);
         }
-
-        //</editor-fold>
+    //</editor-fold>
 
         //<editor-fold desc="init - Arena">
-        DIVIDING_LINE_SIZE = Math.max(1, DensityUtil.dp2px(0.5f));
+        DIVIDING_LINE_SIZE = Math.max(1, SmartUtil.dp2px(0.5f));
 
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStrokeWidth(DIVIDING_LINE_SIZE);
@@ -177,7 +172,7 @@ public abstract class FunGameView<T extends FunGameView> extends FunGameBase {
         if (ta.hasValue(R.styleable.FunGameView_fghTextLoadingFailed)) {
             mTextLoadingFailed = ta.getString(R.styleable.FunGameView_fghTextLoadingFailed);
         }
-        //</editor-fold>
+    //</editor-fold>
 
         ta.recycle();
     }
@@ -195,7 +190,6 @@ public abstract class FunGameView<T extends FunGameView> extends FunGameBase {
     }
 
     //<editor-fold desc="绘制方法">
-
     protected abstract void drawGame(Canvas canvas, int width, int height);
 
     @Override
@@ -213,7 +207,7 @@ public abstract class FunGameView<T extends FunGameView> extends FunGameBase {
      * 绘制分割线
      * @param canvas 默认画布
      */
-    private void drawBoundary(Canvas canvas,int width,int height) {
+    protected void drawBoundary(Canvas canvas,int width,int height) {
         mPaint.setColor(mBackColor);
         canvas.drawRect(0, 0, width, height, mPaint);
         mPaint.setColor(mBoundaryColor);
@@ -226,23 +220,23 @@ public abstract class FunGameView<T extends FunGameView> extends FunGameBase {
      * 绘制文字内容
      * @param canvas 默认画布
      */
-    private void drawText(Canvas canvas, int width, int height) {
+    protected void drawText(Canvas canvas, int width, int height) {
         switch (status) {
             case STATUS_GAME_PREPARE:
             case STATUS_GAME_PLAY:
-                mPaintText.setTextSize(DensityUtil.dp2px(25));
+                mPaintText.setTextSize(SmartUtil.dp2px(25));
                 promptText(canvas, mTextLoading, width, height);
                 break;
             case STATUS_GAME_FINISHED:
-                mPaintText.setTextSize(DensityUtil.dp2px(20));
+                mPaintText.setTextSize(SmartUtil.dp2px(20));
                 promptText(canvas, mTextLoadingFinish, width, height);
                 break;
             case STATUS_GAME_FAIL:
-                mPaintText.setTextSize(DensityUtil.dp2px(20));
+                mPaintText.setTextSize(SmartUtil.dp2px(20));
                 promptText(canvas, mTextLoadingFailed, width, height);
                 break;
             case STATUS_GAME_OVER:
-                mPaintText.setTextSize(DensityUtil.dp2px(25));
+                mPaintText.setTextSize(SmartUtil.dp2px(25));
                 promptText(canvas, mTextGameOver, width, height);
                 break;
         }
@@ -253,7 +247,7 @@ public abstract class FunGameView<T extends FunGameView> extends FunGameBase {
      * @param canvas 默认画布
      * @param text 相关文字字符串
      */
-    private void promptText(Canvas canvas, String text, int width, int height) {
+    protected void promptText(Canvas canvas, String text, int width, int height) {
         float textX = (width - mPaintText.measureText(text)) * .5f;
         float textY = height  * .5f - (mPaintText.ascent() + mPaintText.descent()) * .5f;
         canvas.drawText(text, textX, textY, mPaintText);
@@ -261,7 +255,6 @@ public abstract class FunGameView<T extends FunGameView> extends FunGameBase {
     //</editor-fold>
 
     //<editor-fold desc="控制方法">
-
     protected abstract void resetConfigParams();
 
     /**
@@ -292,11 +285,9 @@ public abstract class FunGameView<T extends FunGameView> extends FunGameBase {
         controllerPosition = distance;
         thisView.postInvalidate();
     }
-
     //</editor-fold>
 
     //<editor-fold desc="生命周期">
-
     @Override
     public void onInitialized(@NonNull RefreshKernel kernel, int height, int maxDragHeight) {
         final View thisView = this;
@@ -352,6 +343,9 @@ public abstract class FunGameView<T extends FunGameView> extends FunGameBase {
             case ReleaseToRefresh:
                 mMaskViewTop.setText(mMaskTextTopRelease);
                 break;
+//            case ReleaseToTwoLevel:
+//                mMaskViewTop.setText(com.scwang.smartrefresh.layout.R.string.srl_header_secondary);
+//                break;
         }
     }
 
@@ -359,8 +353,8 @@ public abstract class FunGameView<T extends FunGameView> extends FunGameBase {
     public void onStartAnimator(@NonNull RefreshLayout layout, int height, int maxDragHeight) {
         super.onStartAnimator(layout, height, maxDragHeight);
         final View topView = mMaskViewTop;
-        final View bottomView = mMaskViewBottom;
         final View shadowView = mShadowView;
+        final View bottomView = mMaskViewBottom;
         final AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.play(ObjectAnimator.ofFloat(topView, "translationY", topView.getTranslationY(), -mHalfHeaderHeight))
                 .with(ObjectAnimator.ofFloat(bottomView, "translationY", bottomView.getTranslationY(), mHalfHeaderHeight))
@@ -401,7 +395,6 @@ public abstract class FunGameView<T extends FunGameView> extends FunGameBase {
 
         return super.onFinish(layout, success);
     }
-
     //</editor-fold>
 
 }

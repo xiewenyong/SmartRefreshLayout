@@ -15,27 +15,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 
 import com.scwang.refreshlayout.R;
-import com.scwang.refreshlayout.activity.example.BasicExampleActivity;
 import com.scwang.refreshlayout.adapter.BaseRecyclerAdapter;
 import com.scwang.refreshlayout.adapter.SmartViewHolder;
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.constant.SpinnerStyle;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
-import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.util.Arrays;
 import java.util.Collection;
 
 import static android.R.layout.simple_list_item_2;
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
-import static com.scwang.refreshlayout.R.id.recyclerView;
-import static com.scwang.refreshlayout.R.id.refreshLayout;
 
 /**
  * 使用示例-BottomSheet
@@ -54,7 +47,9 @@ public class BottomSheetExampleFragment extends Fragment {
     public void onViewCreated(@NonNull View root, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(root, savedInstanceState);
 
-        final Toolbar toolbar = (Toolbar)root.findViewById(R.id.toolbar);
+        root = onCreateView(LayoutInflater.from(getContext()), null, null);
+
+        final Toolbar toolbar = root.findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,7 +57,7 @@ public class BottomSheetExampleFragment extends Fragment {
             }
         });
 
-        RefreshLayout refreshLayout = (RefreshLayout) root.findViewById(R.id.refreshLayout);
+        RefreshLayout refreshLayout = root.findViewById(R.id.refreshLayout);
         refreshLayout.setRefreshHeader(new ClassicsHeader(getContext()).setSpinnerStyle(SpinnerStyle.FixedBehind).setPrimaryColorId(R.color.colorPrimary).setAccentColorId(android.R.color.white));
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
@@ -77,7 +72,7 @@ public class BottomSheetExampleFragment extends Fragment {
             }
         });
 
-        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = root.findViewById(R.id.recyclerView);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), VERTICAL));
@@ -91,15 +86,15 @@ public class BottomSheetExampleFragment extends Fragment {
             }
         });
 
-        ((ViewGroup)refreshLayout.getLayout().getParent()).removeView(refreshLayout.getLayout());
-        BottomSheetDialog dialog=new BottomSheetDialog(getContext());
+        BottomSheetDialog dialog = new BottomSheetDialog(getContext());
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 getActivity().finish();
             }
         });
-        dialog.setContentView(refreshLayout.getLayout());
+        dialog.setContentView(root);
+        dialog.setCancelable(false);
         dialog.show();
     }
 

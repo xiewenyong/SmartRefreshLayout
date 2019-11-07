@@ -15,13 +15,13 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.constant.RefreshState;
 import com.scwang.smartrefresh.layout.constant.SpinnerStyle;
 import com.scwang.smartrefresh.layout.internal.InternalAbstract;
-import com.scwang.smartrefresh.layout.util.DensityUtil;
+import com.scwang.smartrefresh.layout.util.SmartUtil;
 
 import static android.view.MotionEvent.ACTION_MASK;
 
 /**
  * 游戏 header
- * Created by SCWANG on 2017/6/17.
+ * Created by scwang on 2017/6/17.
  */
 @SuppressLint("RestrictedApi")
 public abstract class FunGameBase extends InternalAbstract implements RefreshHeader {
@@ -40,11 +40,10 @@ public abstract class FunGameBase extends InternalAbstract implements RefreshHea
     //</editor-fold>
 
     //<editor-fold desc="View">
-
     public FunGameBase(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         final View thisView = this;
-        thisView.setMinimumHeight(DensityUtil.dp2px(100));
+        thisView.setMinimumHeight(SmartUtil.dp2px(100));
         mScreenHeightPixels = thisView.getResources().getDisplayMetrics().heightPixels;
         mSpinnerStyle = SpinnerStyle.MatchLayout;
     }
@@ -69,16 +68,17 @@ public abstract class FunGameBase extends InternalAbstract implements RefreshHea
                     float dy = event.getRawY() - mTouchY;
                     if (dy >= 0) {
                         final double M = mHeaderHeight * 2;
-                        final double H = mScreenHeightPixels * 2 / 3;
+                        final double H = mScreenHeightPixels * 2 / 3f;
                         final double x = Math.max(0, dy * 0.5);
                         final double y = Math.min(M * (1 - Math.pow(100, -x / H)), x);// 公式 y = M(1-40^(-x/H))
-                        mRefreshKernel.moveSpinner((int) y, false);
+                        mRefreshKernel.moveSpinner(Math.max(1, (int) y), false);
                     } else {
-                        final double M = mHeaderHeight * 2;
-                        final double H = mScreenHeightPixels * 2 / 3;
-                        final double x = -Math.min(0, dy * 0.5);
-                        final double y = -Math.min(M * (1 - Math.pow(100, -x / H)), x);// 公式 y = M(1-40^(-x/H))
-                        mRefreshKernel.moveSpinner((int) y, false);
+//                        final double M = mHeaderHeight * 2;
+//                        final double H = mScreenHeightPixels * 2 / 3;
+//                        final double x = -Math.min(0, dy * 0.5);
+//                        final double y = -Math.min(M * (1 - Math.pow(100, -x / H)), x);// 公式 y = M(1-40^(-x/H))
+//                        mRefreshKernel.moveSpinner((int) y, false);
+                        mRefreshKernel.moveSpinner(1, false);
                     }
                     break;
                 case MotionEvent.ACTION_UP:
@@ -94,17 +94,19 @@ public abstract class FunGameBase extends InternalAbstract implements RefreshHea
         }
         return super.onTouchEvent(event);
     }
-
     //</editor-fold>
 
     //<editor-fold desc="abstract">
-    boolean enableLoadMore;
+//    boolean enableLoadMore;
     protected void onManualOperationStart() {
         if (!mManualOperation) {
             mManualOperation = true;
             mRefreshContent = mRefreshKernel.getRefreshContent();
-            enableLoadMore = mRefreshKernel.getRefreshLayout().isEnableLoadMore();
-            mRefreshKernel.getRefreshLayout().setEnableLoadMore(false);
+//            if (mRefreshContent instanceof CoordinatorLayoutListener) {
+//                ((CoordinatorLayoutListener) mRefreshContent).onCoordinatorUpdate(true, false);
+//            }
+//            enableLoadMore = mRefreshKernel.getRefreshLayout().isEnableLoadMore();
+//            mRefreshKernel.getRefreshLayout().setEnableLoadMore(false);
             View contentView = mRefreshContent.getView();
             MarginLayoutParams params = (MarginLayoutParams)contentView.getLayoutParams();
             params.topMargin += mHeaderHeight;
@@ -117,13 +119,14 @@ public abstract class FunGameBase extends InternalAbstract implements RefreshHea
     protected void onManualOperationRelease() {
         if (mIsFinish) {
             mManualOperation = false;
-            mRefreshKernel.getRefreshLayout().setEnableLoadMore(enableLoadMore);
+//            if (mRefreshContent instanceof CoordinatorLayoutListener) {
+//                ((CoordinatorLayoutListener) mRefreshContent).onCoordinatorUpdate(true, true);
+//            }
+//            mRefreshKernel.getRefreshLayout().setEnableLoadMore(enableLoadMore);
             if (mTouchY != -1) {//还没松手
                 onFinish(mRefreshKernel.getRefreshLayout(), mLastFinish);
-//                mRefreshKernel.setStateRefreshingFinish();
                 mRefreshKernel.setState(RefreshState.RefreshFinish);
                 mRefreshKernel.animSpinner(0);
-//                mRefreshKernel.getRefreshLayout().finishRefresh(0);
             } else {
                 mRefreshKernel.moveSpinner(mHeaderHeight, true);
             }
@@ -138,8 +141,6 @@ public abstract class FunGameBase extends InternalAbstract implements RefreshHea
     //</editor-fold>
 
     //<editor-fold desc="RefreshHeader">
-
-
     @Override
     public void onMoving(boolean isDragging, float percent, int offset, int height, int maxDragHeight) {
         if (mManualOperation) onManualOperationMove(percent, offset, height, maxDragHeight);
@@ -149,20 +150,6 @@ public abstract class FunGameBase extends InternalAbstract implements RefreshHea
             thisView.setTranslationY(mOffset - mHeaderHeight);
         }
     }
-
-//    @Override
-//    public void onPulling(float percent, int offset, int height, int maxDragHeight) {
-//        if (mManualOperation) onManualOperationMove(percent, offset, height, maxDragHeight);
-//        else {
-//            mOffset = offset;
-//            setTranslationY(mOffset - mHeaderHeight);
-//        }
-//    }
-//
-//    @Override
-//    public void onReleasing(float percent, int offset, int height, int maxDragHeight) {
-//        onPulling(percent, offset, height, maxDragHeight);
-//    }
 
     @Override
     public void onStartAnimator(@NonNull RefreshLayout refreshLayout, int height, int maxDragHeight) {
@@ -205,11 +192,6 @@ public abstract class FunGameBase extends InternalAbstract implements RefreshHea
         }
         return 0;
     }
-//
-//    @NonNull
-//    @Override
-//    public SpinnerStyle getSpinnerStyle() {
-//        return SpinnerStyle.MatchLayout;
-//    }
+
     //</editor-fold>
 }

@@ -25,7 +25,7 @@ import com.scwang.smartrefresh.layout.constant.SpinnerStyle;
 import com.scwang.smartrefresh.layout.internal.ArrowDrawable;
 import com.scwang.smartrefresh.layout.internal.ProgressDrawable;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
-import com.scwang.smartrefresh.layout.util.DensityUtil;
+import com.scwang.smartrefresh.layout.util.SmartUtil;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -46,7 +46,7 @@ public class CustomExampleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_example_custom);
 
-        final Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        final Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,7 +54,7 @@ public class CustomExampleActivity extends AppCompatActivity {
             }
         });
 
-        ListView listView = (ListView) findViewById(R.id.listView);
+        ListView listView = findViewById(R.id.listView);
         listView.setAdapter(mAdapter = new BaseRecyclerAdapter<Void>(simple_list_item_2) {
             @Override
             protected void onBindViewHolder(SmartViewHolder holder, Void model, int position) {
@@ -64,7 +64,7 @@ public class CustomExampleActivity extends AppCompatActivity {
             }
         });
 
-        final RefreshLayout refreshLayout = (RefreshLayout) findViewById(R.id.refreshLayout);
+        final RefreshLayout refreshLayout = findViewById(R.id.refreshLayout);
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull final RefreshLayout refreshLayout) {
@@ -114,11 +114,11 @@ public class CustomExampleActivity extends AppCompatActivity {
             mProgressView = new ImageView(context);
             mProgressView.setImageDrawable(mProgressDrawable);
             mArrowView.setImageDrawable(new ArrowDrawable());
-            addView(mProgressView, DensityUtil.dp2px(20), DensityUtil.dp2px(20));
-            addView(mArrowView, DensityUtil.dp2px(20), DensityUtil.dp2px(20));
-            addView(new Space(context), DensityUtil.dp2px(20), DensityUtil.dp2px(20));
+            addView(mProgressView, SmartUtil.dp2px(20), SmartUtil.dp2px(20));
+            addView(mArrowView, SmartUtil.dp2px(20), SmartUtil.dp2px(20));
+            addView(new Space(context), SmartUtil.dp2px(20), SmartUtil.dp2px(20));
             addView(mHeaderText, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-            setMinimumHeight(DensityUtil.dp2px(60));
+            setMinimumHeight(SmartUtil.dp2px(60));
         }
         @NonNull
         public View getView() {

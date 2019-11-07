@@ -13,7 +13,7 @@ import com.scwang.refreshlayout.R;
 import com.scwang.refreshlayout.util.StatusBarUtil;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
-import com.scwang.smartrefresh.layout.util.DensityUtil;
+import com.scwang.smartrefresh.layout.util.SmartUtil;
 
 import java.util.Locale;
 
@@ -28,7 +28,7 @@ public class WebViewPracticeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_practice_webview);
 
-        final Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        final Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -36,8 +36,8 @@ public class WebViewPracticeActivity extends AppCompatActivity {
             }
         });
 
-        final WebView webView = (WebView) findViewById(R.id.webView);
-        final RefreshLayout refreshLayout = (RefreshLayout) findViewById(R.id.refreshLayout);
+        final WebView webView = findViewById(R.id.webView);
+        final RefreshLayout refreshLayout = findViewById(R.id.refreshLayout);
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
@@ -50,6 +50,7 @@ public class WebViewPracticeActivity extends AppCompatActivity {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient(){
             @Override
+            @SuppressWarnings("deprecation")
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
                 return true;
@@ -59,7 +60,7 @@ public class WebViewPracticeActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 refreshLayout.finishRefresh();
-                view.loadUrl(String.format(Locale.CHINA, "javascript:document.body.style.paddingTop='%fpx'; void 0", DensityUtil.px2dp(webView.getPaddingTop())));
+                view.loadUrl(String.format(Locale.CHINA, "javascript:document.body.style.paddingTop='%fpx'; void 0", SmartUtil.px2dp(webView.getPaddingTop())));
             }
         });
 

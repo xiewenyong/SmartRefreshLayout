@@ -19,9 +19,8 @@ import java.util.Collection;
 
 /**
  * 结合 SnapHelper 使用
- * Created by SCWANG on 2017/8/4.
+ * Created by scwang on 2017/8/4.
  */
-
 public class SnapHelperExampleActivity extends AppCompatActivity {
 
     @Override
@@ -29,7 +28,7 @@ public class SnapHelperExampleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_example_snaphelper);
 
-        final Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        final Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -43,7 +42,7 @@ public class SnapHelperExampleActivity extends AppCompatActivity {
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.setAdapter(new BaseRecyclerAdapter<Integer>(loadModels(), R.layout.listitem_example_snaphelper) {
+            recyclerView.setAdapter(new BaseRecyclerAdapter<Integer>(loadModels(), R.layout.item_example_snaphelper) {
                 @Override
                 protected void onBindViewHolder(SmartViewHolder holder, Integer model, int position) {
                     holder.image(R.id.imageView, model);

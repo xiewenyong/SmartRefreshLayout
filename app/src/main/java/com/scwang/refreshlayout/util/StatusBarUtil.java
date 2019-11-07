@@ -1,11 +1,11 @@
 package com.scwang.refreshlayout.util;
 
-import android.support.annotation.RequiresApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
 import android.support.annotation.FloatRange;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -19,15 +19,14 @@ import java.util.regex.Pattern;
 
 /**
  * 状态栏透明
- * Created by SCWANG on 2016/10/26.
+ * Created by scwang on 2016/10/26.
  */
-
 @SuppressWarnings("unused")
 public class StatusBarUtil {
 
     public static int DEFAULT_COLOR = 0;
     public static float DEFAULT_ALPHA = 0;//Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? 0.2f : 0.3f;
-    public static final int MIN_API = 19;
+    public static final int MIN_API = 17;
 
     //<editor-fold desc="沉侵">
     public static void immersive(Activity activity) {
@@ -183,11 +182,13 @@ public class StatusBarUtil {
             darkModeFlag = field.getInt(layoutParams);
             Method extraFlagField = clazz.getMethod("setExtraFlags", int.class, int.class);
             extraFlagField.invoke(window, darkmode ? darkModeFlag : 0, darkModeFlag);
-            return true;
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            darkModeForM(window, darkmode);
+        }
+        return true;
     }
 
     /** 判断是否Flyme4以上 */

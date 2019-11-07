@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.scwang.smartrefresh.header.waveswipe;
 
 import android.animation.Animator;
@@ -26,7 +25,6 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.os.Build;
 import android.support.annotation.ColorInt;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;

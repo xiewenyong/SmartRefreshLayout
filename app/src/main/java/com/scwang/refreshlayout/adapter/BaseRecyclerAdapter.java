@@ -16,20 +16,18 @@ import java.util.List;
 
 /**
  *
- * Created by SCWANG on 2017/6/11.
+ * Created by scwang on 2017/6/11.
  */
-
 @SuppressWarnings({"UnusedReturnValue", "unused"})
 public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<SmartViewHolder> implements ListAdapter {
 
 
     //<editor-fold desc="BaseRecyclerAdapter">
-
     private final int mLayoutId;
     private final List<T> mList;
     private int mLastPosition = -1;
     private boolean mOpenAnimationEnable = true;
-    private AdapterView.OnItemClickListener mListener;
+    protected AdapterView.OnItemClickListener mListener;
 
     public BaseRecyclerAdapter(@LayoutRes int layoutId) {
         setHasStableIds(false);
@@ -50,7 +48,6 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<SmartV
         this.mLayoutId = layoutId;
     }
     //</editor-fold>
-
 
     private void addAnimate(SmartViewHolder holder, int postion) {
         if (mOpenAnimationEnable && mLastPosition < postion) {
@@ -86,31 +83,6 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<SmartV
 
     public void setOpenAnimationEnable(boolean enabled) {
         this.mOpenAnimationEnable = enabled;
-    }
-
-    //</editor-fold>
-
-    //<editor-fold desc="API">
-
-    public BaseRecyclerAdapter<T> setOnItemClickListener(AdapterView.OnItemClickListener listener) {
-        mListener = listener;
-        return this;
-    }
-
-    public BaseRecyclerAdapter<T> refresh(Collection<T> collection) {
-        mList.clear();
-        mList.addAll(collection);
-        notifyDataSetChanged();
-        notifyListDataSetChanged();
-        mLastPosition = -1;
-        return this;
-    }
-
-    public BaseRecyclerAdapter<T> loadMore(Collection<T> collection) {
-        mList.addAll(collection);
-        notifyDataSetChanged();
-        notifyListDataSetChanged();
-        return this;
     }
     //</editor-fold>
 
@@ -191,6 +163,40 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<SmartV
     public int getCount() {
         return mList.size();
     }
-
     //</editor-fold>
+
+    //<editor-fold desc="API">
+    public T get(int index) {
+        return mList.get(index);
+    }
+
+    public BaseRecyclerAdapter<T> setOnItemClickListener(AdapterView.OnItemClickListener listener) {
+        mListener = listener;
+        return this;
+    }
+
+    public BaseRecyclerAdapter<T> refresh(Collection<T> collection) {
+        mList.clear();
+        mList.addAll(collection);
+        notifyDataSetChanged();
+        notifyListDataSetChanged();
+        mLastPosition = -1;
+        return this;
+    }
+
+    public BaseRecyclerAdapter<T> loadMore(Collection<T> collection) {
+        mList.addAll(collection);
+        notifyDataSetChanged();
+        notifyListDataSetChanged();
+        return this;
+    }
+
+    public BaseRecyclerAdapter<T> insert(Collection<T> collection) {
+        mList.addAll(0, collection);
+        notifyItemRangeInserted(0, collection.size());
+        notifyListDataSetChanged();
+        return this;
+    }
+    //</editor-fold>
+
 }
